@@ -1,8 +1,7 @@
 package challenge.backend.marguerp.service;
 
-import challenge.backend.marguerp.domain.GiftDeposit;
-import challenge.backend.marguerp.domain.MealDeposit;
 import challenge.backend.marguerp.domain.User;
+import challenge.backend.marguerp.dto.DepositDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +12,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 class DepositServiceTest {
-
 
     @Autowired
     private DepositService depositService;
@@ -26,16 +24,19 @@ class DepositServiceTest {
         double amount = 10.0;
         LocalDate distributionDate = LocalDate.now();
 
+        assertThat(this.depositService.getUsers().get(userName)).isNull();
+
         // WHEN
-        GiftDeposit deposit = this.depositService.distributeGiftDeposit(userName, amount, distributionDate);
+        DepositDTO deposit = this.depositService.distributeGiftDeposit(userName, amount, distributionDate);
 
         // THEN
+        assertThat(deposit.getUsername()).isEqualTo(userName);
         assertThat(deposit.getAmount()).isEqualTo(amount);
         assertThat(deposit.getDistributionDate()).isEqualTo(distributionDate);
 
         User actualUser = this.depositService.getUsers().get(userName);
         assertThat(actualUser).isNotNull();
-        assertThat(actualUser.getDeposits()).contains(deposit);
+        assertThat(actualUser.getDeposits()).hasSize(1);
 
     }
 
@@ -46,17 +47,19 @@ class DepositServiceTest {
         String userName = "anotherUserName";
         double amount = 20.0;
         LocalDate distributionDate = LocalDate.now();
+        assertThat(this.depositService.getUsers().get(userName)).isNull();
 
         // WHEN
-        MealDeposit deposit = this.depositService.distributeMealDeposit(userName, amount, distributionDate);
+        DepositDTO deposit = this.depositService.distributeMealDeposit(userName, amount, distributionDate);
 
         // THEN
+        assertThat(deposit.getUsername()).isEqualTo(userName);
         assertThat(deposit.getAmount()).isEqualTo(amount);
         assertThat(deposit.getDistributionDate()).isEqualTo(distributionDate);
 
         User actualUser = this.depositService.getUsers().get(userName);
         assertThat(actualUser).isNotNull();
-        assertThat(actualUser.getDeposits()).contains(deposit);
+        assertThat(actualUser.getDeposits()).hasSize(1);
     }
 
 }

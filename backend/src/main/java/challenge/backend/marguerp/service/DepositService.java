@@ -1,9 +1,13 @@
 package challenge.backend.marguerp.service;
 
+import challenge.backend.marguerp.domain.Deposit;
 import challenge.backend.marguerp.domain.GiftDeposit;
 import challenge.backend.marguerp.domain.MealDeposit;
 import challenge.backend.marguerp.domain.User;
+import challenge.backend.marguerp.dto.DepositDTO;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,7 +21,10 @@ public class DepositService {
     public static final int EMPTY_BALANCE = 0;
     private final Map<String, User> users = new HashMap<>();
 
-    public GiftDeposit distributeGiftDeposit(
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    public DepositDTO distributeGiftDeposit(
             String username,
             double amount,
             LocalDate distributionDate
@@ -27,10 +34,11 @@ public class DepositService {
         User user = this.getUser(username);
         user.addDeposit(deposit);
 
-        return deposit;
+        return toDTO(deposit, user);
     }
 
-    public MealDeposit distributeMealDeposit(
+
+    public DepositDTO distributeMealDeposit(
             String username,
             double amount,
             LocalDate distributionDate
@@ -40,7 +48,16 @@ public class DepositService {
         User user = this.getUser(username);
         user.addDeposit(deposit);
 
-        return deposit;
+        return toDTO(deposit, user);
+    }
+
+    private DepositDTO toDTO(Deposit deposit, User user) {
+        DepositDTO depositDTO = objectMapper.convertValue(deposit, DepositDTO.class);
+
+        // add missing username in Deposit
+        depositDTO.setUsername(user.getUsername());
+
+        return depositDTO;
     }
 
     /**
