@@ -71,4 +71,5 @@ public class DepositService {
     private User getUser(String username) {
         return users.computeIfAbsent(username, key -> new User(username) );
     }
+
 }
