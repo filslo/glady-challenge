@@ -80,4 +80,10 @@ public class DepositController {
         );
     }
 
+    @GetMapping("/users/{username}/balance")
+    @ResponseStatus(OK)
+    @Operation(summary = "Get User balance")
+    public double calculateBalance(@PathVariable String username) {
+        return depositService.calculateBalance(username);
+    }
 }

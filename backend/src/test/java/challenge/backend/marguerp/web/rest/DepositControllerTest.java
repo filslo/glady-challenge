@@ -22,7 +22,9 @@ import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -257,6 +259,25 @@ class DepositControllerTest {
     private String formatLocalDate(LocalDate distributionDate) throws JsonProcessingException {
         // use jackson to convert the date in the common date formatting and remove starting and ending "
         return objectMapper.writeValueAsString(distributionDate).replaceAll("\"", "");
+    }
+
+    @Test
+    void test_calculateUserBalance() throws Exception {
+
+        //GIVEN
+
+        String username = "usernameForUserBalance";
+
+        double userBalance = 1000.54321;
+        when(depositService.calculateBalance(username))
+                .thenReturn(userBalance);
+        //WHEN
+        mockMvc.perform(get("/users/{username}/balance", username))
+
+                // THEN
+                .andExpect(status().isOk())
+                .andExpect(content().string(String.valueOf(userBalance)));
+
     }
 
 }
