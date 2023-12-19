@@ -72,4 +72,19 @@ public class DepositService {
         return users.computeIfAbsent(username, key -> new User(username) );
     }
 
+    public double calculateBalance(String username) {
+
+        //no user existence checks / if unknown, its balance will be null / zero
+        User user = this.getUser(username);
+
+        return user.getDeposits().stream().mapToDouble(
+                deposit ->
+                        deposit.isExpired()
+                                ? EMPTY_BALANCE
+                                : deposit.getAmount()
+        ).sum();
+
+    }
+
+
 }
