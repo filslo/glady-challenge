@@ -36,3 +36,8 @@ Jessica receives a Meal distribution from Apple with the amount of $50 on 01/01/
 
 * Implement one or two services allowing companies to distribute gift and meal deposits to a user if the company balance allows it.
 * Implement a service to calculate the user's balance.
+
+
+# Challenge Accepted
+
+=> [My Implementation Decisions](./Implementation.md)
